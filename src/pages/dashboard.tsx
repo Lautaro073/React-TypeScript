@@ -129,7 +129,7 @@ const Dashboard: React.FC = () => {
           <LiveFilterChart 
             symbols={selectedSymbols} 
             updateInterval={1000} 
-            maxPoints={30} 
+            maxPoints={10} 
             removeCount={1} 
           />
         ) : filteredFinancialData.length === 0 ? (

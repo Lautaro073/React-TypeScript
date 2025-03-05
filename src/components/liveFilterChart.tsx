@@ -1,7 +1,8 @@
 // LiveFilterChart.tsx
 import React, { useMemo } from 'react';
 import { Line } from 'react-chartjs-2';
-import { useLiveFilterChartData, UseLiveFilterChartDataParams } from '@/hooks/useLiveFilterChartData';
+import { useLiveFilterChartData } from '@/hooks/useLiveFilterChartData';
+import { UseLiveFilterChartDataParams } from '@/types/types';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import {
   Chart as ChartJS,

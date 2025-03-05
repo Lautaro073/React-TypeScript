@@ -1,14 +1,8 @@
 // useLiveFilterChartData.ts
 import { useEffect } from 'react';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
-import { LiveChartData } from '@/types/types';
+import { LiveChartData, UseLiveFilterChartDataParams} from '@/types/types';
 
-export interface UseLiveFilterChartDataParams {
-  symbols: string[];
-  updateInterval: number;
-  maxPoints: number;
-  removeCount: number;
-}
 
 export function useLiveFilterChartData({
   symbols,

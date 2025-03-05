@@ -1,19 +1,11 @@
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import {ChartLegendProps} from '@/types/types'
 
-interface ChartLegendProps {
-  datasets: Array<{
-    label: string
-    backgroundColor: string
-    borderColor: string
-    hidden: boolean
-  }>
-  toggleVisibility: (label: string) => void
-}
 
 export function ChartLegend({ datasets, toggleVisibility }: ChartLegendProps) {
   return (
-    <ul className="flex gap-4 mt-2 items-center justify-center">
+    <ul className="flex gap-4 mt-2 items-center mb-4  justify-center">
       {datasets.map((ds, idx) => (
         <li key={idx}>
           <Button

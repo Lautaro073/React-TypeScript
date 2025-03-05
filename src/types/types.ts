@@ -43,3 +43,26 @@ export interface FinancialChartProps {
   selectedSymbols?: string[];
   chartData?: LiveChartData;
 }
+
+export interface UseLiveFilterChartDataParams {
+  symbols: string[];
+  updateInterval: number;
+  maxPoints: number;
+  removeCount: number;
+}
+export interface ChartLegendProps {
+  datasets: Array<{
+    label: string
+    backgroundColor: string
+    borderColor: string
+    hidden: boolean
+  }>
+  toggleVisibility: (label: string) => void
+}
+
+export interface FinancialCardProps {
+  symbol: string;
+  currentPrice: number;
+  previousPrice: number;
+  iconPath: string;
+}

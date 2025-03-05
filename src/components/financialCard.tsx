@@ -1,13 +1,8 @@
 import { useRef, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { ArrowUp, ArrowDown } from 'lucide-react';
+import { FinancialCardProps } from '@/types/types';
 
-interface FinancialCardProps {
-  symbol: string;
-  currentPrice: number;
-  previousPrice: number;
-  iconPath: string;
-}
 
 export function FinancialCard({
   symbol,

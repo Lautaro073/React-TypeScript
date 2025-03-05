@@ -19,9 +19,9 @@ export const TemporalFilter: React.FC<TemporalFilterProps> = ({
   minDate,
   maxDate,
 }) => {
-  // Para el modo activo (que puede ser live o personalizado)
+  // Guardamos el modo actual
   const [filterMode, setFilterMode] = useLocalStorage<FilterMode>('filterMode', 'custom');
-  // Guardamos el rango personalizado por separado (persistente)
+  // Guardamos el rango personalizado de forma separada
   const [customDateRange, setCustomDateRange] = useLocalStorage<DateRange | null>('customDateRange', null);
 
   const handleModeChange = useCallback(
@@ -32,24 +32,19 @@ export const TemporalFilter: React.FC<TemporalFilterProps> = ({
         const to = new Date();
         const from = subDays(to, 7);
         const newRange = { from, to };
-        // Actualizamos el rango personalizado y la selección activa
-        setCustomDateRange(newRange);
         onRangeChange(newRange);
       } else if (mode === '1month') {
         const to = new Date();
         const from = subMonths(to, 1);
         const newRange = { from, to };
-        setCustomDateRange(newRange);
         onRangeChange(newRange);
       } else if (mode === 'custom') {
-        // En modo personalizado, se utiliza el valor previamente guardado
         onRangeChange(customDateRange);
       } else if (mode === 'live') {
-        // En vivo: no se filtra por fecha, pero no se borra el rango personalizado
         onRangeChange(null);
       }
     },
-    [customDateRange, onRangeChange, setCustomDateRange, setFilterMode]
+    [customDateRange, onRangeChange, setFilterMode]
   );
 
   const handleCustomRangeChange = useCallback(
@@ -61,37 +56,42 @@ export const TemporalFilter: React.FC<TemporalFilterProps> = ({
   );
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex items-center gap-2">
-        <Button
-          aria-label="Seleccionar últimos 7 días"
-          variant={filterMode === '7days' ? 'default' : 'outline'}
-          onClick={() => handleModeChange('7days')}
-        >
-          Últimos 7 días
-        </Button>
-        <Button
-          aria-label="Seleccionar último mes"
-          variant={filterMode === '1month' ? 'default' : 'outline'}
-          onClick={() => handleModeChange('1month')}
-        >
-          Último mes
-        </Button>
-        <Button
-          aria-label="Seleccionar Personalizado"
-          variant={filterMode === 'custom' ? 'default' : 'outline'}
-          onClick={() => handleModeChange('custom')}
-        >
-          Personalizado
-        </Button>
-        <Button
-          aria-label="Seleccionar En Vivo"
-          variant={filterMode === 'live' ? 'default' : 'outline'}
-          onClick={() => handleModeChange('live')}
-        >
-          En Vivo
-        </Button>
-      </div>
+    <div className="flex flex-col gap-2 mb-4">
+    <div className="flex flex-wrap items-center gap-2">
+      <Button
+        aria-label="Seleccionar últimos 7 días"
+        variant={filterMode === '7days' ? 'default' : 'outline'}
+        className="w-full sm:w-auto"
+        onClick={() => handleModeChange('7days')}
+      >
+        Últimos 7 días
+      </Button>
+      <Button
+        aria-label="Seleccionar último mes"
+        variant={filterMode === '1month' ? 'default' : 'outline'}
+        className="w-full sm:w-auto"
+        onClick={() => handleModeChange('1month')}
+      >
+        Último mes
+      </Button>
+      <Button
+        aria-label="Seleccionar Personalizado"
+        variant={filterMode === 'custom' ? 'default' : 'outline'}
+        className="w-full sm:w-auto"
+        onClick={() => handleModeChange('custom')}
+      >
+        Personalizado
+      </Button>
+      <Button
+        aria-label="Seleccionar En vivo"
+        variant={filterMode === 'live' ? 'default' : 'outline'}
+        className="w-full sm:w-auto"
+        onClick={() => handleModeChange('live')}
+      >
+        En vivo
+      </Button>
+    </div>
+  
 
       {filterMode === 'custom' && (
         <div className="flex items-center gap-2">
