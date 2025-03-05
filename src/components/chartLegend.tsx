@@ -13,7 +13,7 @@ interface ChartLegendProps {
 
 export function ChartLegend({ datasets, toggleVisibility }: ChartLegendProps) {
   return (
-    <ul className="flex gap-4 mt-2">
+    <ul className="flex gap-4 mt-2 items-center justify-center">
       {datasets.map((ds, idx) => (
         <li key={idx}>
           <Button

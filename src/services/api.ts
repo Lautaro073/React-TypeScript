@@ -1,4 +1,4 @@
-import { FinancialData } from '../types/financial';
+import { FinancialData } from '../types/types';
 
 export async function fetchFinancialData(): Promise<FinancialData[]> {
   try {

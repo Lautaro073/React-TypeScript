@@ -1,3 +1,4 @@
+// temporalFilter.tsx
 import React, { useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { DatePickerRange } from '@/components/datePickerRange';
@@ -5,10 +6,10 @@ import { DateRange } from 'react-day-picker';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { subDays, subMonths } from 'date-fns';
 
-type FilterMode = '7days' | '1month' | 'custom';
+type FilterMode = '7days' | '1month' | 'custom' | 'live';
 
 interface TemporalFilterProps {
-  onRangeChange: (range: DateRange | undefined) => void;
+  onRangeChange: (range: DateRange | null) => void;
   minDate: Date;
   maxDate: Date;
 }
@@ -18,14 +19,10 @@ export const TemporalFilter: React.FC<TemporalFilterProps> = ({
   minDate,
   maxDate,
 }) => {
-  const [filterMode, setFilterMode] = useLocalStorage<FilterMode>(
-    'filterMode',
-    'custom'
-  );
-  const [dateRange, setDateRange] = useLocalStorage<DateRange | undefined>(
-    'dateRange',
-    undefined
-  );
+  // Para el modo activo (que puede ser live o personalizado)
+  const [filterMode, setFilterMode] = useLocalStorage<FilterMode>('filterMode', 'custom');
+  // Guardamos el rango personalizado por separado (persistente)
+  const [customDateRange, setCustomDateRange] = useLocalStorage<DateRange | null>('customDateRange', null);
 
   const handleModeChange = useCallback(
     (mode: FilterMode) => {
@@ -35,27 +32,32 @@ export const TemporalFilter: React.FC<TemporalFilterProps> = ({
         const to = new Date();
         const from = subDays(to, 7);
         const newRange = { from, to };
-        setDateRange(newRange);
+        // Actualizamos el rango personalizado y la selección activa
+        setCustomDateRange(newRange);
         onRangeChange(newRange);
       } else if (mode === '1month') {
         const to = new Date();
         const from = subMonths(to, 1);
         const newRange = { from, to };
-        setDateRange(newRange);
+        setCustomDateRange(newRange);
         onRangeChange(newRange);
-      } else {
-        onRangeChange(dateRange);
+      } else if (mode === 'custom') {
+        // En modo personalizado, se utiliza el valor previamente guardado
+        onRangeChange(customDateRange);
+      } else if (mode === 'live') {
+        // En vivo: no se filtra por fecha, pero no se borra el rango personalizado
+        onRangeChange(null);
       }
     },
-    [dateRange, onRangeChange, setDateRange, setFilterMode]
+    [customDateRange, onRangeChange, setCustomDateRange, setFilterMode]
   );
 
   const handleCustomRangeChange = useCallback(
-    (range: DateRange | undefined) => {
-      setDateRange(range);
+    (range: DateRange | null) => {
+      setCustomDateRange(range);
       onRangeChange(range);
     },
-    [onRangeChange, setDateRange]
+    [onRangeChange, setCustomDateRange]
   );
 
   return (
@@ -82,12 +84,19 @@ export const TemporalFilter: React.FC<TemporalFilterProps> = ({
         >
           Personalizado
         </Button>
+        <Button
+          aria-label="Seleccionar En Vivo"
+          variant={filterMode === 'live' ? 'default' : 'outline'}
+          onClick={() => handleModeChange('live')}
+        >
+          En Vivo
+        </Button>
       </div>
 
       {filterMode === 'custom' && (
         <div className="flex items-center gap-2">
           <DatePickerRange
-            dateRange={dateRange}
+            dateRange={customDateRange}
             onChange={handleCustomRangeChange}
             minDate={minDate}
             maxDate={maxDate}

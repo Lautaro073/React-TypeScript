@@ -5,8 +5,8 @@ import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar'
 
 interface DatePickerRangeProps {
-  dateRange: DateRange | undefined
-  onChange: (range: DateRange | undefined) => void
+  dateRange: DateRange | null
+  onChange: (range: DateRange | null) => void
   minDate: Date
   maxDate: Date
 }
@@ -40,8 +40,8 @@ export function DatePickerRange({
         <Calendar
           mode="range"
           numberOfMonths={2}
-          selected={dateRange}
-          onSelect={onChange}
+          selected={dateRange ?? undefined}
+          onSelect={(range: DateRange | undefined) => onChange(range ?? null)}
           initialFocus
           disabled={[{ before: minDate, after: maxDate }]}
         />

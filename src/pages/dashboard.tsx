@@ -2,7 +2,8 @@ import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { DashboardLayout } from '@/components/layout/dashboardLayout';
 import { fetchFinancialData } from '@/services/api';
 import FinancialChart from '@/components/financialChart';
-import { FinancialData } from '@/types/financial';
+import { LiveFilterChart } from '@/components/liveFilterChart';
+import type { FinancialData } from '@/types/types';
 import { DateRange } from 'react-day-picker';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { TemporalFilter } from '@/components/temporalFilter';
@@ -12,17 +13,15 @@ import { useFilteredFinancialData } from '@/hooks/useFilteredFinancialData';
 import { Spinner } from '@/components/ui/spinner';
 import { FinancialCard } from '@/components/financialCard';
 import ErrorBoundary from '@/components/errorBoundary';
-import { useRandomCardPrices } from '@/hooks/useRandomCardPrices';
+import { useRealtimePriceUpdates } from '@/hooks/useRealtimePriceUpdates';
 
 const Dashboard: React.FC = () => {
   const [financialData, setFinancialData] = useState<FinancialData[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [fetchError, setFetchError] = useState<string>('');
-
-  const [dateRange, setDateRange] = useLocalStorage<DateRange | undefined>(
-    'dateRange',
-    undefined
-  );
+  
+  // Usamos null para indicar que el modo en vivo está activo.
+  const [filterRange, setFilterRange] = useLocalStorage<DateRange | null>('dateRange', null);
   const [selectedSymbols] = useLocalStorage<string[]>('selectedSymbols', [
     'AAPL',
     'GOOG',
@@ -30,10 +29,7 @@ const Dashboard: React.FC = () => {
   ]);
   const [isFiltering, setIsFiltering] = useState<boolean>(false);
 
-
   const cardSymbols = useMemo(() => ['AAPL', 'GOOG', 'MSFT'], []);
-
-  
   const symbolIcons: Record<string, string> = {
     AAPL: '/src/assets/icons/aapl.png',
     GOOG: '/src/assets/icons/goog.png',
@@ -58,38 +54,34 @@ const Dashboard: React.FC = () => {
 
   const { minDate, maxDate } = useMinMaxDates(financialData);
 
+  // Para el gráfico histórico, si hay un rango (no nulo)
   const filteredFinancialData = useFilteredFinancialData(
     financialData,
-    dateRange,
+    filterRange ? filterRange : undefined,
     selectedSymbols
   );
 
-  const cardsState = useRandomCardPrices({
+  const cardsState = useRealtimePriceUpdates({
     financialData,
-    cardSymbols,
-    updateInterval: 6000,
+    symbols: cardSymbols,
+    updateInterval: 1000,
   });
 
   const handleRangeChange = useCallback(
-    (range: DateRange | undefined) => {
-      setIsFiltering(true)
-      setDateRange(range)
+    (range: DateRange | null) => {
+      setIsFiltering(true);
+      setFilterRange(range);
       setTimeout(() => {
-        setIsFiltering(false)
-      }, 300)
+        setIsFiltering(false);
+      }, 300);
     },
-    [setDateRange]
-  )
-
+    [setFilterRange]
+  );
 
   if (isLoading) {
     return (
       <DashboardLayout>
-        <div
-          className="flex flex-col items-center justify-center h-[50vh]"
-          role="status"
-          aria-live="polite"
-        >
+        <div className="flex flex-col items-center justify-center h-[50vh]" role="status" aria-live="polite">
           <Spinner className="mb-2" />
           <span>Cargando datos financieros...</span>
         </div>
@@ -109,9 +101,7 @@ const Dashboard: React.FC = () => {
     <ErrorBoundary>
       <DashboardLayout>
         <div className="mb-4 flex flex-col gap-4">
-          <h2 className="text-xl font-semibold mb-4 text-center">
-            Precios de Acciones en Tiempo Real
-          </h2>
+          <h2 className="text-xl font-semibold mb-4 text-center">Precios de Acciones en Tiempo Real</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {cardsState.map((card) => (
               <FinancialCard
@@ -123,33 +113,30 @@ const Dashboard: React.FC = () => {
               />
             ))}
           </div>
-          <TemporalFilter
-            onRangeChange={handleRangeChange}
-            minDate={minDate}
-            maxDate={maxDate}
-          />
         </div>
 
         <h2 className="text-xl font-semibold mb-4 text-center">
-          Evolución del Precio de Acciones
+          {filterRange === null ? 'Gráfico en Vivo' : 'Evolución del Precio de Acciones'}
         </h2>
-
+        <TemporalFilter onRangeChange={handleRangeChange} minDate={minDate} maxDate={maxDate} />
         {isFiltering && (
-          <div
-            className="text-center text-sm text-gray-400 mb-2"
-            role="status"
-            aria-live="polite"
-          >
+          <div className="text-center text-sm text-gray-400 mb-2" role="status" aria-live="polite">
             Filtrando...
           </div>
         )}
 
-        {filteredFinancialData.length === 0 ? (
+        {filterRange === null ? (
+          <LiveFilterChart 
+            symbols={selectedSymbols} 
+            updateInterval={1000} 
+            maxPoints={30} 
+            removeCount={1} 
+          />
+        ) : filteredFinancialData.length === 0 ? (
           <Alert variant="destructive">
             <AlertTitle>No hay datos</AlertTitle>
             <AlertDescription>
-              No se encontraron datos para el rango de fechas y acciones
-              seleccionados.
+              No se encontraron datos para el rango de fechas y acciones seleccionados.
             </AlertDescription>
           </Alert>
         ) : (
@@ -159,10 +146,8 @@ const Dashboard: React.FC = () => {
               selectedSymbols={selectedSymbols}
             />
             <figcaption className="sr-only">
-              Gráfico de líneas que muestra la evolución del precio de las
-              acciones seleccionadas a lo largo del tiempo. El eje horizontal
-              representa las fechas y el eje vertical el precio. Se pueden
-              identificar cambios de tendencia con flechas en la leyenda.
+              Gráfico de líneas que muestra la evolución del precio de las acciones seleccionadas a lo largo del tiempo.
+              El eje horizontal representa las fechas y el eje vertical el precio.
             </figcaption>
           </figure>
         )}
@@ -172,3 +157,4 @@ const Dashboard: React.FC = () => {
 };
 
 export default Dashboard;
+

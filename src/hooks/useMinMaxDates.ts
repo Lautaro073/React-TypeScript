@@ -1,5 +1,5 @@
 import { useMemo } from "react"
-import { FinancialData } from "@/types/financial"
+import { FinancialData } from "@/types/types"
 
 export function useMinMaxDates(financialData: FinancialData[]) {
   return useMemo(() => {
