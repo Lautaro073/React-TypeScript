@@ -1,0 +1,60 @@
+# Dashboard de Datos Financieros
+
+Este proyecto es un Dashboard de Datos Financieros desarrollado con **React** y **TypeScript**, que simula la visualización de precios de acciones. La aplicación permite filtrar datos por rango de fechas, seleccionar acciones específicas para visualizar en un gráfico de líneas interactivo, y presenta tarjetas informativas con el precio actual y variación. Además, se implementa persistencia local para recordar las preferencias del usuario entre sesiones.
+
+## Decisiones de Diseño
+
+### Composición y Modularidad
+- **Componentes Reutilizables:**  
+  La aplicación está dividida en componentes modulares, tales como:
+  - **DashboardLayout:** Contenedor principal del Dashboard.
+  - **FinancialChart:** Componente que renderiza el gráfico de líneas (usando Chart.js) y que integra una leyenda personalizada para la accesibilidad.
+  - **TemporalFilter:** Permite seleccionar un rango de fechas (con opciones “Últimos 7 días”, “Último mes” y “Personalizado”).
+  - **FinancialCard:** Muestra el precio actual y la variación para cada acción.
+- **Hooks Personalizados:**  
+  Se crearon hooks como `useMinMaxDates`, `useFilteredFinancialData` y `useRandomCardPrices` para encapsular la lógica de filtrado, cálculo de fechas y actualización aleatoria de precios, respectivamente.
+
+### Optimización
+- **Memorización y Callbacks:**  
+  Se utiliza `useMemo` para evitar cálculos innecesarios (por ejemplo, al construir los datos del gráfico o filtrar la información) y `useCallback` para memorizar funciones como `handleRangeChange` y evitar su recreación en cada render.
+- **Actualización en Tiempo Real (Simulada):**  
+  Se implementó un hook (`useRandomCardPrices`) que simula la actualización de precios cada cierto intervalo (por ejemplo, 1 minuto), sin afectar los datos base utilizados por el gráfico. Esto permite separar la visualización en tiempo real (tarjetas) de los datos originales.
+- **Manejo Eficiente del Estado:**  
+  Se utiliza `useState` y `useLocalStorage` para gestionar el estado local y la persistencia de datos. La estructura modular facilita escalar el proyecto en caso de requerir una gestión de estado global (por ejemplo, mediante Context, Redux Toolkit o Zustand).
+
+### Accesibilidad
+- **Etiquetas Semánticas y ARIA:**  
+  Se utilizan etiquetas semánticas como `<figure>` y `<figcaption>` para el gráfico, con clases `sr-only` para proveer descripciones accesibles a los lectores de pantalla.
+- **Navegación con Teclado:**  
+  Los controles interactivos (por ejemplo, el TemporalFilter y la leyenda personalizada) están implementados con botones nativos y atributos `tabIndex` y `aria-label` para facilitar la navegación por teclado y mejorar la experiencia de usuarios con discapacidad visual.
+- **Actualización Dinámica de ARIA:**  
+  En las tarjetas se actualiza dinámicamente el atributo `aria-label` mediante `useRef` y `useEffect`, proporcionando una descripción actualizada del precio actual y la variación.
+
+### Gestión de Estados y Persistencia
+- **Persistencia Local:**  
+  Se utiliza un hook personalizado `useLocalStorage` para guardar y recuperar:
+  - El rango de fechas seleccionado.
+  - La selección de símbolos a visualizar.
+  - El estado de visibilidad de las series en el gráfico.
+- **Manejo de Datos Asíncronos y Errores:**  
+  La carga de datos se realiza mediante una función asíncrona en un `useEffect`, que actualiza el estado de carga (`isLoading`) y maneja errores (`fetchError`). Se muestra un spinner y mensajes de error claros en la UI cuando corresponde.
+
+## Implementacion de actualización en Tiempo Real (Opcional)
+
+Para una actualización en tiempo real más robusta, se podría implementar WebSockets de la siguiente forma:
+- **WebSockets:**  
+  En lugar de simular actualizaciones aleatorias mediante `setInterval` en el hook `useRandomCardPrices`, se establecería una conexión WebSocket a un servidor que envíe datos actualizados en tiempo real.
+- **Integración con el Estado:**  
+  Los mensajes recibidos a través del WebSocket actualizarían el estado global o local (por ejemplo, mediante un hook o Context) que se reflejaría tanto en las tarjetas como en el gráfico.
+- **Beneficios:**  
+  Esto permitiría una experiencia en tiempo real sin recargar el estado a intervalos fijos, mejorando la eficiencia y la sincronización de datos.
+
+## Conclusión
+
+El proyecto sigue buenas prácticas en cuanto a:
+- **Modularidad y reutilización:** Componentes y hooks personalizados.
+- **Optimización:** Uso de `useMemo` y `useCallback` para evitar renders innecesarios.
+- **Accesibilidad:** Inclusión de etiquetas semánticas, ARIA y soporte para navegación por teclado.
+- **Gestión de estados y persistencia:** Uso de hooks como `useState` y `useLocalStorage`, y manejo adecuado de datos asíncronos y errores.
+
+Esta estructura facilita el mantenimiento y escalabilidad del proyecto, y se adapta a requerimientos futuros, como la integración de datos en tiempo real mediante WebSockets.

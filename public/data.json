@@ -1,0 +1,82 @@
+[
+  { "timestamp": 1733116800000, "symbol": "AAPL", "price": 550.23 },
+  { "timestamp": 1734326400000, "symbol": "AAPL", "price": 1152.15 },
+  { "timestamp": 1735708800000, "symbol": "AAPL", "price": 1500.1 },
+  { "timestamp": 1736918400000, "symbol": "AAPL", "price": 2000.0 },
+  { "timestamp": 1738387200000, "symbol": "AAPL", "price": 800.5 },
+  { "timestamp": 1739596800000, "symbol": "AAPL", "price": 550.75 },
+  { "timestamp": 1740806400000, "symbol": "AAPL", "price": 1157.2 },
+  { "timestamp": 1741324800000, "symbol": "AAPL", "price": 2500.0 },
+
+  { "timestamp": 1733116800000, "symbol": "GOOG", "price": 2800.45 },
+  { "timestamp": 1734326400000, "symbol": "GOOG", "price": 1825.6 },
+  { "timestamp": 1735708800000, "symbol": "GOOG", "price": 830.75 },
+  { "timestamp": 1736918400000, "symbol": "GOOG", "price": 345.0 },
+  { "timestamp": 1738387200000, "symbol": "GOOG", "price": 2850.25 },
+  { "timestamp": 1739596800000, "symbol": "GOOG", "price": 3000.8 },
+  { "timestamp": 1740806400000, "symbol": "GOOG", "price": 1500.5 },
+  { "timestamp": 1741324800000, "symbol": "GOOG", "price": 1000.0 },
+
+  { "timestamp": 1733116800000, "symbol": "MSFT", "price": 300.1 },
+  { "timestamp": 1734326400000, "symbol": "MSFT", "price": 500.2 },
+  { "timestamp": 1735708800000, "symbol": "MSFT", "price": 750.5 },
+  { "timestamp": 1736918400000, "symbol": "MSFT", "price": 100.0 },
+  { "timestamp": 1738387200000, "symbol": "MSFT", "price": 600.75 },
+  { "timestamp": 1739596800000, "symbol": "MSFT", "price": 1307.0 },
+  { "timestamp": 1740806400000, "symbol": "MSFT", "price": 2500.5 },
+  { "timestamp": 1741324800000, "symbol": "MSFT", "price": 3000.0 },
+  { "timestamp": 1738713600000, "symbol": "AAPL", "price": 120.45 },
+  { "timestamp": 1738713600000, "symbol": "GOOG", "price": 1800.1 },
+  { "timestamp": 1738713600000, "symbol": "MSFT", "price": 350 },
+
+  { "timestamp": 1738972800000, "symbol": "AAPL", "price": 980.22 },
+  { "timestamp": 1738972800000, "symbol": "GOOG", "price": 2000.2 },
+  { "timestamp": 1738972800000, "symbol": "MSFT", "price": 999.9 },
+
+  { "timestamp": 1739232000000, "symbol": "AAPL", "price": 1500.01 },
+  { "timestamp": 1739232000000, "symbol": "GOOG", "price": 2200.5 },
+  { "timestamp": 1739232000000, "symbol": "MSFT", "price": 1200.5 },
+
+  { "timestamp": 1739491200000, "symbol": "AAPL", "price": 2100.75 },
+  { "timestamp": 1739491200000, "symbol": "GOOG", "price": 1850 },
+  { "timestamp": 1739491200000, "symbol": "MSFT", "price": 200.1 },
+
+  { "timestamp": 1739750400000, "symbol": "AAPL", "price": 700.35 },
+  { "timestamp": 1739750400000, "symbol": "GOOG", "price": 2900.75 },
+  { "timestamp": 1739750400000, "symbol": "MSFT", "price": 1400 },
+
+  { "timestamp": 1740009600000, "symbol": "AAPL", "price": 2200.89 },
+  { "timestamp": 1740009600000, "symbol": "GOOG", "price": 999.99 },
+  { "timestamp": 1740009600000, "symbol": "MSFT", "price": 2900 },
+
+  { "timestamp": 1740268800000, "symbol": "AAPL", "price": 999.99 },
+  { "timestamp": 1740268800000, "symbol": "GOOG", "price": 1250 },
+  { "timestamp": 1740268800000, "symbol": "MSFT", "price": 310.45 },
+
+  { "timestamp": 1740528000000, "symbol": "AAPL", "price": 1700 },
+  { "timestamp": 1740528000000, "symbol": "GOOG", "price": 2340.55 },
+  { "timestamp": 1740528000000, "symbol": "MSFT", "price": 1250.6 },
+
+  { "timestamp": 1740873600000, "symbol": "AAPL", "price": 2300.5 },
+  { "timestamp": 1740873600000, "symbol": "GOOG", "price": 1350.15 },
+  { "timestamp": 1740873600000, "symbol": "MSFT", "price": 2200.7 },
+
+  { "timestamp": 1741132800000, "symbol": "AAPL", "price": 1150.75 },
+  { "timestamp": 1741132800000, "symbol": "GOOG", "price": 2700.1 },
+  { "timestamp": 1741132800000, "symbol": "MSFT", "price": 1800.99 },
+
+  { "timestamp": 1741392000000, "symbol": "AAPL", "price": 2999.99 },
+  { "timestamp": 1741392000000, "symbol": "GOOG", "price": 500 },
+  { "timestamp": 1741392000000, "symbol": "MSFT", "price": 600 },
+  { "timestamp": 1740528000000, "symbol": "AAPL", "price": 500 },
+  { "timestamp": 1740700800000, "symbol": "AAPL", "price": 800 },
+  { "timestamp": 1740873600000, "symbol": "AAPL", "price": 600 },
+
+  { "timestamp": 1740528000000, "symbol": "GOOG", "price": 1500 },
+  { "timestamp": 1740700800000, "symbol": "GOOG", "price": 1000 },
+  { "timestamp": 1740873600000, "symbol": "GOOG", "price": 2000 },
+
+  { "timestamp": 1740528000000, "symbol": "MSFT", "price": 700 },
+  { "timestamp": 1740700800000, "symbol": "MSFT", "price": 300 },
+  { "timestamp": 1740873600000, "symbol": "MSFT", "price": 1200 }
+]
