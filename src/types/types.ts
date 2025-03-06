@@ -48,13 +48,6 @@ export interface FinancialChartProps {
   removeCount?: number;
 }
 
-export interface UseLiveFilterChartDataParams {
-  financialData: FinancialData[];
-  symbols: string[];
-  updateInterval: number;
-  maxPoints: number;
-  removeCount: number;
-}
 export interface ChartLegendProps {
   datasets: Array<{
     label: string;

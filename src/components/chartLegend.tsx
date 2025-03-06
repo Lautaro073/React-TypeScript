@@ -4,7 +4,7 @@ import { ChartLegendProps } from '@/types/types';
 
 export function ChartLegend({ datasets, toggleVisibility }: ChartLegendProps) {
   return (
-    <ul className="flex gap-4 mt-2 items-center mb-4  justify-center">
+    <ul className="flex gap-4  items-center mb-3 mt-4  justify-center">
       {datasets.map((ds, idx) => (
         <li key={idx}>
           <Button
