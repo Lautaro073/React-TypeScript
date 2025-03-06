@@ -13,6 +13,9 @@ import { Spinner } from '@/components/ui/spinner';
 import { FinancialCard } from '@/components/financialCard';
 import ErrorBoundary from '@/components/errorBoundary';
 import { useRealtimePriceUpdates } from '@/hooks/useRealtimePriceUpdates';
+import aaplIcon from '@/assets/icons/aapl.png';
+import googIcon from '@/assets/icons/goog.png';
+import msftIcon from '@/assets/icons/msft.png';
 
 const Dashboard: React.FC = () => {
   const [financialData, setFinancialData] = useState<FinancialData[]>([]);
@@ -33,9 +36,9 @@ const Dashboard: React.FC = () => {
   // Uso de useMemo para definir de forma estática los símbolos de las tarjetas.
   const cardSymbols = useMemo(() => ['AAPL', 'GOOG', 'MSFT'], []);
   const symbolIcons: Record<string, string> = {
-    AAPL: '/src/assets/icons/aapl.png',
-    GOOG: '/src/assets/icons/goog.png',
-    MSFT: '/src/assets/icons/msft.png',
+    AAPL: aaplIcon,
+    GOOG: googIcon,
+    MSFT: msftIcon,
   };
 
   useEffect(() => {
