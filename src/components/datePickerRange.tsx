@@ -7,6 +7,7 @@ import {
   PopoverContent,
 } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
+import { Calendar as CalendarIcon } from 'lucide-react';
 
 interface DatePickerRangeProps {
   dateRange: DateRange | null;
@@ -28,9 +29,13 @@ export function DatePickerRange({
           variant="outline"
           className="w-[260px] justify-start text-left font-normal"
         >
+          <CalendarIcon className="mr-2 h-4 w-4" />
           {dateRange?.from
             ? dateRange.to
-              ? `${format(dateRange.from, 'LLL dd, y')} - ${format(dateRange.to, 'LLL dd, y')}`
+              ? `${format(dateRange.from, 'LLL dd, y')} - ${format(
+                  dateRange.to,
+                  'LLL dd, y'
+                )}`
               : format(dateRange.from, 'LLL dd, y')
             : 'Seleccione una fecha'}
         </Button>
