@@ -10,20 +10,20 @@ Este proyecto es un Dashboard de Datos Financieros desarrollado con **React** y 
 
 ## Instalación
 
-1. **Descomprima el .Zip**
-2. **Instalar las dependencias**
+#1. **Descomprima el .Zip**
+#2. **Instalar las dependencias**
    -npm install --legacy-peer-deps
 
-# o, si usas Yarn:
+   o, si usas Yarn:
 
-# yarn install
+   -yarn install
 
-3. **Inicialice el proyecto**
+#3. **Inicialice el proyecto**
    -npm run dev
 
-# o, si usas Yarn:
+   o, si usas Yarn:
 
-# yarn dev
+   -yarn dev
 
 ## Decisiones de Diseño
 
