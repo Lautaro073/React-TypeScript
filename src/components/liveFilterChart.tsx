@@ -1,4 +1,4 @@
-import  { useMemo } from 'react';
+import { useMemo } from 'react';
 import { Line } from 'react-chartjs-2';
 import { useLiveFilterChartData } from '@/hooks/useLiveFilterChartData';
 import { ChartLegend } from '@/components/chartLegend';
@@ -11,24 +11,21 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import {  UseLiveFilterChartDataParams } from '@/types/types';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend);
 
-interface LiveFinancialChartProps {
-  symbols: string[];
-  updateInterval: number;
-  maxPoints: number;
-  removeCount: number;
-}
+interface LiveFinancialChartProps extends UseLiveFilterChartDataParams {}
 
 export function LiveFinancialChart({
+  financialData,
   symbols,
   updateInterval,
   maxPoints,
   removeCount,
 }: LiveFinancialChartProps) {
-  // El hook ya maneja el estado y la persistencia vía localStorage.
-  const liveData = useLiveFilterChartData({ symbols, updateInterval, maxPoints, removeCount });
+  
+  const liveData = useLiveFilterChartData({ financialData, symbols, updateInterval, maxPoints, removeCount });
 
   const chartOptions = useMemo(() => ({
     responsive: true,
@@ -41,7 +38,7 @@ export function LiveFinancialChart({
     scales: {
       x: {
         display: true,
-        title: { display: true, text: 'Tiempo' },
+        title: { display: true, text: 'Tiempo (HH:MM:SS)' },
         grid: { display: true },
       },
       y: {

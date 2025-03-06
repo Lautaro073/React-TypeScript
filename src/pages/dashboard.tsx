@@ -62,7 +62,7 @@ const Dashboard: React.FC = () => {
   const cardsState = useRealtimePriceUpdates({
     financialData,
     symbols: cardSymbols,
-    updateInterval: 6000,
+    updateInterval: 1000,
   });
 
   const handleRangeChange = useCallback(
@@ -125,6 +125,7 @@ const Dashboard: React.FC = () => {
 
         {filterRange === null ? (
           <LiveFilterChart 
+            financialData={financialData}
             symbols={selectedSymbols} 
             updateInterval={1000} 
             maxPoints={20} 

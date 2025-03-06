@@ -45,6 +45,7 @@ export interface FinancialChartProps {
 }
 
 export interface UseLiveFilterChartDataParams {
+  financialData: FinancialData[];
   symbols: string[];
   updateInterval: number;
   maxPoints: number;

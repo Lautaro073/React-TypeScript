@@ -1,16 +1,11 @@
-// useLiveFilterChartData.ts
-import { useEffect } from 'react';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
-import { LiveChartData } from '@/types/types';
-
-export interface UseLiveFilterChartDataParams {
-  symbols: string[];
-  updateInterval: number;
-  maxPoints: number;
-  removeCount: number;
-}
+// src/hooks/useLiveFilterChartData.ts
+import { useEffect, useState } from "react";
+import { LiveChartData, UseLiveFilterChartDataParams } from "@/types/types";
+import { pickRandomSymbols, pickRandomPrice } from "@/utils/dataUtils";
+import { FinancialData } from "@/types/types";
 
 export function useLiveFilterChartData({
+  financialData,
   symbols,
   updateInterval,
   maxPoints,
@@ -18,55 +13,80 @@ export function useLiveFilterChartData({
 }: UseLiveFilterChartDataParams): LiveChartData {
   const LOCAL_STORAGE_KEY = 'liveFilterChartData';
 
-  // Inicializamos el estado con persistencia utilizando useLocalStorage.
-  const [liveData, setLiveData] = useLocalStorage<LiveChartData>(LOCAL_STORAGE_KEY, {
-    labels: [],
-    datasets: symbols.map((symbol, index): LiveChartData['datasets'][number] => ({
-      label: symbol,
-      data: [] as number[],
-      fill: false,
-      backgroundColor: 'transparent',
-      borderColor: ['rgba(75,192,192,1)', 'rgba(192,75,192,1)', 'rgba(192,192,75,1)', 'rgba(75,75,192,1)', 'rgba(192,75,75,1)'][index % 5],
-      tension: 0.3,
-      pointRadius: 3,
-      pointHoverRadius: 5,
-      hidden: false,
-    })),
+  // Estado interno: se inicializa leyendo de localStorage (si existe) o con el estado inicial
+  const [liveData, setLiveData] = useState<LiveChartData>(() => {
+    const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (stored) return JSON.parse(stored);
+    return {
+      labels: [],
+      datasets: symbols.map((symbol, index): LiveChartData["datasets"][number] => ({
+        label: symbol,
+        data: [],
+        fill: false,
+        backgroundColor: 'transparent',
+        borderColor: [
+          'rgba(75,192,192,1)',
+          'rgba(192,75,192,1)',
+          'rgba(192,192,75,1)',
+          'rgba(75,75,192,1)',
+          'rgba(192,75,75,1)',
+        ][index % 5],
+        tension: 0.3,
+        pointRadius: 3,
+        pointHoverRadius: 5,
+        hidden: false,
+      })),
+    };
   });
 
+  // Efecto de actualización cada updateInterval
   useEffect(() => {
+    if (financialData.length === 0) return;
+
+    // Agrupamos la data financiera por símbolo
+    const grouped: Record<string, FinancialData[]> = {};
+    for (const item of financialData) {
+      grouped[item.symbol] = grouped[item.symbol] || [];
+      grouped[item.symbol].push(item);
+    }
+    // Ordenamos cada grupo por timestamp
+    Object.keys(grouped).forEach((symbol) => {
+      grouped[symbol].sort((a, b) => a.timestamp - b.timestamp);
+    });
+
     const intervalId = setInterval(() => {
       setLiveData((prevData: LiveChartData): LiveChartData => {
-        // Generamos la etiqueta con la hora actual en formato HH:MM:SS.
         const now = new Date();
         const timeLabel = now.toLocaleTimeString([], { hour12: false });
 
-        // Actualizamos cada dataset: si tiene datos, agregamos un delta aleatorio; si no, iniciamos con un valor aleatorio.
-        const updatedDatasets = prevData.datasets.map(
-          (dataset: LiveChartData['datasets'][number]): LiveChartData['datasets'][number] => {
-            let newValue: number;
-            if (dataset.data.length > 0) {
-              const lastValue = dataset.data[dataset.data.length - 1];
-              const delta = (Math.random() - 0.5) * 10; 
-              newValue = lastValue + delta;
-            } else {
-              newValue = 100 + Math.random() * 100;
-            }
-            return {
-              ...dataset,
-              data: [...dataset.data, newValue],
-            };
+        // Seleccionamos aleatoriamente algunos símbolos (como en las cards)
+        const symbolsToUpdate = pickRandomSymbols(symbols);
+
+        const updatedDatasets = prevData.datasets.map((dataset) => {
+          let newValue: number;
+          if (
+            symbolsToUpdate.includes(dataset.label) &&
+            grouped[dataset.label] &&
+            grouped[dataset.label].length > 0
+          ) {
+            // Se obtiene un precio aleatorio del grupo, igual que en las cards
+            newValue = pickRandomPrice(grouped[dataset.label]);
+          } else {
+            newValue = dataset.data[dataset.data.length - 1] || 100;
           }
-        );
+          return {
+            ...dataset,
+            data: [...dataset.data, newValue],
+          };
+        });
 
         const updatedLabels = [...prevData.labels, timeLabel];
 
-        // Si se supera el máximo de puntos, removemos los datos antiguos.
+        // Si se supera el máximo de puntos, eliminamos de golpe el exceso
         if (updatedLabels.length > maxPoints) {
-          updatedLabels.splice(0, removeCount);
-          updatedDatasets.forEach(
-            (dataset: LiveChartData['datasets'][number]) => dataset.data.splice(0, removeCount)
-          );
+          const exceso = updatedLabels.length - maxPoints;
+          updatedLabels.splice(0, exceso);
+          updatedDatasets.forEach((dataset) => dataset.data.splice(0, exceso));
         }
 
         return {
@@ -77,7 +97,12 @@ export function useLiveFilterChartData({
     }, updateInterval);
 
     return () => clearInterval(intervalId);
-  }, [updateInterval, maxPoints, removeCount, setLiveData]);
+  }, [financialData, symbols, updateInterval, maxPoints, removeCount]);
+
+  // Efecto de persistencia: cada vez que liveData cambia, se guarda en localStorage.
+  useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(liveData));
+  }, [liveData]);
 
   return liveData;
 }
