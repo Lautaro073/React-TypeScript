@@ -1,4 +1,4 @@
-// temporalFilter.tsx
+// src/components/temporalFilter.tsx
 import React, { useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { DatePickerRange } from '@/components/datePickerRange';
@@ -19,9 +19,9 @@ export const TemporalFilter: React.FC<TemporalFilterProps> = ({
   minDate,
   maxDate,
 }) => {
-  // Para el modo activo (que puede ser live o personalizado)
+  // Guardamos el modo actual (por ejemplo, 'live', 'custom', etc.)
   const [filterMode, setFilterMode] = useLocalStorage<FilterMode>('filterMode', 'custom');
-  // Guardamos el rango personalizado por separado (persistente)
+  // Guardamos el rango personalizado en una clave separada
   const [customDateRange, setCustomDateRange] = useLocalStorage<DateRange | null>('customDateRange', null);
 
   const handleModeChange = useCallback(
@@ -32,24 +32,20 @@ export const TemporalFilter: React.FC<TemporalFilterProps> = ({
         const to = new Date();
         const from = subDays(to, 7);
         const newRange = { from, to };
-        // Actualizamos el rango personalizado y la selección activa
-        setCustomDateRange(newRange);
         onRangeChange(newRange);
       } else if (mode === '1month') {
         const to = new Date();
         const from = subMonths(to, 1);
         const newRange = { from, to };
-        setCustomDateRange(newRange);
         onRangeChange(newRange);
       } else if (mode === 'custom') {
-        // En modo personalizado, se utiliza el valor previamente guardado
+        // Usa el valor guardado en customDateRange (puede ser null si aún no se seleccionó)
         onRangeChange(customDateRange);
       } else if (mode === 'live') {
-        // En vivo: no se filtra por fecha, pero no se borra el rango personalizado
         onRangeChange(null);
       }
     },
-    [customDateRange, onRangeChange, setCustomDateRange, setFilterMode]
+    [customDateRange, onRangeChange, setFilterMode]
   );
 
   const handleCustomRangeChange = useCallback(
@@ -61,11 +57,12 @@ export const TemporalFilter: React.FC<TemporalFilterProps> = ({
   );
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex items-center gap-2">
+    <div className="flex flex-col gap-2 mb-3">
+      <div className="flex flex-wrap items-center gap-2">
         <Button
           aria-label="Seleccionar últimos 7 días"
           variant={filterMode === '7days' ? 'default' : 'outline'}
+          className="w-full sm:w-auto"
           onClick={() => handleModeChange('7days')}
         >
           Últimos 7 días
@@ -73,6 +70,7 @@ export const TemporalFilter: React.FC<TemporalFilterProps> = ({
         <Button
           aria-label="Seleccionar último mes"
           variant={filterMode === '1month' ? 'default' : 'outline'}
+          className="w-full sm:w-auto"
           onClick={() => handleModeChange('1month')}
         >
           Último mes
@@ -80,16 +78,18 @@ export const TemporalFilter: React.FC<TemporalFilterProps> = ({
         <Button
           aria-label="Seleccionar Personalizado"
           variant={filterMode === 'custom' ? 'default' : 'outline'}
+          className="w-full sm:w-auto"
           onClick={() => handleModeChange('custom')}
         >
           Personalizado
         </Button>
         <Button
-          aria-label="Seleccionar En Vivo"
+          aria-label="Seleccionar En vivo"
           variant={filterMode === 'live' ? 'default' : 'outline'}
+          className="w-full sm:w-auto"
           onClick={() => handleModeChange('live')}
         >
-          En Vivo
+          En vivo
         </Button>
       </div>
 
@@ -106,3 +106,5 @@ export const TemporalFilter: React.FC<TemporalFilterProps> = ({
     </div>
   );
 };
+
+export default TemporalFilter;

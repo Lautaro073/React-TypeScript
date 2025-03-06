@@ -32,17 +32,23 @@ export interface LiveChartData {
 }
 
 export interface UseLiveFilterChartDataParams {
+  financialData: FinancialData[];
   symbols: string[];
   updateInterval: number;
   maxPoints: number;
   removeCount: number;
 }
 
+
 export interface FinancialChartProps {
-  financialData?: FinancialData[];
-  selectedSymbols?: string[];
-  chartData?: LiveChartData;
+  financialData: FinancialData[];
+  selectedSymbols: string[];
+  live: boolean;
+  updateInterval?: number;
+  maxPoints?: number;
+  removeCount?: number;
 }
+
 
 export interface UseLiveFilterChartDataParams {
   financialData: FinancialData[];
