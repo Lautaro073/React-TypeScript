@@ -4,7 +4,7 @@ import { DateRange } from 'react-day-picker';
 
 export function useFilteredFinancialData(
   financialData: FinancialData[],
-  dateRange: DateRange | undefined,
+  dateRange: DateRange | undefined | null,
   selectedSymbols: string[]
 ): FinancialData[] {
   return useMemo(() => {

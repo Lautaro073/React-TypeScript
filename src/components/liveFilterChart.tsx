@@ -1,9 +1,7 @@
-// LiveFilterChart.tsx
-import React, { useMemo } from 'react';
+import  { useMemo } from 'react';
 import { Line } from 'react-chartjs-2';
 import { useLiveFilterChartData } from '@/hooks/useLiveFilterChartData';
-import { UseLiveFilterChartDataParams } from '@/types/types';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { ChartLegend } from '@/components/chartLegend';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -13,44 +11,24 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import { ChartLegend } from '@/components/chartLegend';
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Tooltip,
-  Legend
-);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend);
 
-interface LiveFilterChartProps extends UseLiveFilterChartDataParams {}
+interface LiveFinancialChartProps {
+  symbols: string[];
+  updateInterval: number;
+  maxPoints: number;
+  removeCount: number;
+}
 
-export const LiveFilterChart: React.FC<LiveFilterChartProps> = ({
+export function LiveFinancialChart({
   symbols,
   updateInterval,
   maxPoints,
   removeCount,
-}) => {
+}: LiveFinancialChartProps) {
+  // El hook ya maneja el estado y la persistencia vía localStorage.
   const liveData = useLiveFilterChartData({ symbols, updateInterval, maxPoints, removeCount });
-  
-  // Estado persistente para las líneas ocultas (por ejemplo, la de AAPL)
-  const [hiddenSymbols, setHiddenSymbols] = useLocalStorage<string[]>('liveHiddenSymbols', []);
-
-  const toggleSymbol = (label: string) => {
-    setHiddenSymbols(prev => 
-      prev.includes(label) ? prev.filter(s => s !== label) : [...prev, label]
-    );
-  };
-
-  // Integramos el estado de ocultos en los datasets
-  const chartData = useMemo(() => ({
-    labels: liveData.labels,
-    datasets: liveData.datasets.map(ds => ({
-      ...ds,
-      hidden: hiddenSymbols.includes(ds.label),
-    })),
-  }), [liveData, hiddenSymbols]);
 
   const chartOptions = useMemo(() => ({
     responsive: true,
@@ -58,28 +36,30 @@ export const LiveFilterChart: React.FC<LiveFilterChartProps> = ({
     plugins: {
       legend: { display: false },
       tooltip: { enabled: true },
-      title: { display: true, text: 'Gráfico en Vivo - Filtro por Tiempo' },
+      title: { display: true, text: 'Gráfico en Vivo de Precios' },
     },
     scales: {
       x: {
         display: true,
-        title: { display: true, text: 'Tiempo (HH:MM:SS)' },
+        title: { display: true, text: 'Tiempo' },
         grid: { display: true },
       },
       y: {
         display: true,
-        title: { display: true, text: 'Valor' },
+        title: { display: true, text: 'Precio' },
         grid: { display: true },
       },
     },
   }), []);
 
   return (
-    <div className="w-full" aria-label="Gráfico en vivo con filtro por tiempo">
-      <ChartLegend datasets={chartData.datasets} toggleVisibility={toggleSymbol} />
+    <div className="w-full" aria-label="Gráfico en vivo de precios">
+      <ChartLegend datasets={liveData.datasets} toggleVisibility={(_label) => { /* Implementar si es necesario */ }} />
       <div className="h-96">
-        <Line data={chartData} options={chartOptions} />
+        <Line data={liveData} options={chartOptions} />
       </div>
     </div>
   );
-};
+}
+
+export default LiveFinancialChart;

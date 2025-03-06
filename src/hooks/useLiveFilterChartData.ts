@@ -1,8 +1,14 @@
 // useLiveFilterChartData.ts
 import { useEffect } from 'react';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
-import { LiveChartData, UseLiveFilterChartDataParams} from '@/types/types';
+import { LiveChartData } from '@/types/types';
 
+export interface UseLiveFilterChartDataParams {
+  symbols: string[];
+  updateInterval: number;
+  maxPoints: number;
+  removeCount: number;
+}
 
 export function useLiveFilterChartData({
   symbols,
@@ -41,7 +47,7 @@ export function useLiveFilterChartData({
             let newValue: number;
             if (dataset.data.length > 0) {
               const lastValue = dataset.data[dataset.data.length - 1];
-              const delta = (Math.random() - 0.5) * 10; // Variación entre -5 y +5
+              const delta = (Math.random() - 0.5) * 10; 
               newValue = lastValue + delta;
             } else {
               newValue = 100 + Math.random() * 100;

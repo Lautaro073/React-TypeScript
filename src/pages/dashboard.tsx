@@ -1,8 +1,9 @@
+// dashboard.tsx
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { DashboardLayout } from '@/components/layout/dashboardLayout';
 import { fetchFinancialData } from '@/services/api';
 import FinancialChart from '@/components/financialChart';
-import { LiveFilterChart } from '@/components/liveFilterChart';
+import  LiveFilterChart  from '@/components/liveFilterChart';
 import type { FinancialData } from '@/types/types';
 import { DateRange } from 'react-day-picker';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -19,8 +20,6 @@ const Dashboard: React.FC = () => {
   const [financialData, setFinancialData] = useState<FinancialData[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [fetchError, setFetchError] = useState<string>('');
-  
-  // Usamos null para indicar que el modo en vivo está activo.
   const [filterRange, setFilterRange] = useLocalStorage<DateRange | null>('dateRange', null);
   const [selectedSymbols] = useLocalStorage<string[]>('selectedSymbols', [
     'AAPL',
@@ -54,7 +53,6 @@ const Dashboard: React.FC = () => {
 
   const { minDate, maxDate } = useMinMaxDates(financialData);
 
-  // Para el gráfico histórico, si hay un rango (no nulo)
   const filteredFinancialData = useFilteredFinancialData(
     financialData,
     filterRange ? filterRange : undefined,
@@ -64,7 +62,7 @@ const Dashboard: React.FC = () => {
   const cardsState = useRealtimePriceUpdates({
     financialData,
     symbols: cardSymbols,
-    updateInterval: 1000,
+    updateInterval: 6000,
   });
 
   const handleRangeChange = useCallback(
@@ -129,7 +127,7 @@ const Dashboard: React.FC = () => {
           <LiveFilterChart 
             symbols={selectedSymbols} 
             updateInterval={1000} 
-            maxPoints={10} 
+            maxPoints={20} 
             removeCount={1} 
           />
         ) : filteredFinancialData.length === 0 ? (
@@ -157,4 +155,3 @@ const Dashboard: React.FC = () => {
 };
 
 export default Dashboard;
-
