@@ -20,7 +20,7 @@ export const TemporalFilter: React.FC<TemporalFilterProps> = ({
 }) => {
   const [filterMode, setFilterMode] = useLocalStorage<FilterMode>(
     'filterMode',
-    'custom'
+    'live'
   );
 
   const [customDateRange, setCustomDateRange] =
