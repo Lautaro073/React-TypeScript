@@ -3,7 +3,6 @@ import { Card } from '@/components/ui/card';
 import { ArrowUp, ArrowDown } from 'lucide-react';
 import { FinancialCardProps } from '@/types/types';
 
-
 export function FinancialCard({
   symbol,
   currentPrice,
@@ -14,12 +13,12 @@ export function FinancialCard({
   const hasIncreased = priceDifference > 0;
   const differenceLabel = `${hasIncreased ? '+' : ''}${priceDifference.toFixed(2)}`;
 
- 
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (cardRef.current) {
-      
+      // Actualiza el atributo aria-label del elemento para reflejar dinámicamente
+      // el precio actual y su cambio, mejorando la accesibilidad.
       cardRef.current.setAttribute(
         'aria-label',
         `Acción ${symbol}: precio actual $${currentPrice.toFixed(
@@ -42,8 +41,14 @@ export function FinancialCard({
           ) : (
             <ArrowDown className="h-4 w-4 text-red-500" />
           )}
-          <span className="text-base font-bold">${currentPrice.toFixed(2)}</span>
-          <span className={hasIncreased ? 'text-green-500 text-xs' : 'text-red-500 text-xs'}>
+          <span className="text-base font-bold">
+            ${currentPrice.toFixed(2)}
+          </span>
+          <span
+            className={
+              hasIncreased ? 'text-green-500 text-xs' : 'text-red-500 text-xs'
+            }
+          >
             {differenceLabel}
           </span>
         </div>

@@ -1,7 +1,6 @@
-import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
-import {ChartLegendProps} from '@/types/types'
-
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { ChartLegendProps } from '@/types/types';
 
 export function ChartLegend({ datasets, toggleVisibility }: ChartLegendProps) {
   return (
@@ -11,7 +10,10 @@ export function ChartLegend({ datasets, toggleVisibility }: ChartLegendProps) {
           <Button
             variant="outline"
             size="sm"
-            className={cn("flex items-center gap-1", ds.hidden ? "opacity-50" : "opacity-100")}
+            className={cn(
+              'flex items-center gap-1',
+              ds.hidden ? 'opacity-50' : 'opacity-100'
+            )}
             onClick={() => toggleVisibility(ds.label)}
             aria-label={`Alternar visibilidad de ${ds.label}`}
           >
@@ -27,5 +29,5 @@ export function ChartLegend({ datasets, toggleVisibility }: ChartLegendProps) {
         </li>
       ))}
     </ul>
-  )
+  );
 }

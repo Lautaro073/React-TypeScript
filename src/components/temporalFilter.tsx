@@ -1,4 +1,3 @@
-// src/components/temporalFilter.tsx
 import React, { useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { DatePickerRange } from '@/components/datePickerRange';
@@ -19,11 +18,15 @@ export const TemporalFilter: React.FC<TemporalFilterProps> = ({
   minDate,
   maxDate,
 }) => {
-  // Guardamos el modo actual (por ejemplo, 'live', 'custom', etc.)
-  const [filterMode, setFilterMode] = useLocalStorage<FilterMode>('filterMode', 'custom');
-  // Guardamos el rango personalizado en una clave separada
-  const [customDateRange, setCustomDateRange] = useLocalStorage<DateRange | null>('customDateRange', null);
+  const [filterMode, setFilterMode] = useLocalStorage<FilterMode>(
+    'filterMode',
+    'custom'
+  );
 
+  const [customDateRange, setCustomDateRange] =
+    useLocalStorage<DateRange | null>('customDateRange', null);
+
+  //  Maneja el cambio de modo de filtro y actualiza el rango de fechas de acuerdo al modo seleccionado.
   const handleModeChange = useCallback(
     (mode: FilterMode) => {
       setFilterMode(mode);
@@ -39,7 +42,6 @@ export const TemporalFilter: React.FC<TemporalFilterProps> = ({
         const newRange = { from, to };
         onRangeChange(newRange);
       } else if (mode === 'custom') {
-        // Usa el valor guardado en customDateRange (puede ser null si aún no se seleccionó)
         onRangeChange(customDateRange);
       } else if (mode === 'live') {
         onRangeChange(null);
@@ -48,6 +50,7 @@ export const TemporalFilter: React.FC<TemporalFilterProps> = ({
     [customDateRange, onRangeChange, setFilterMode]
   );
 
+  //  Actualiza el rango de fechas personalizado y notifica el cambio al componente padre.
   const handleCustomRangeChange = useCallback(
     (range: DateRange | null) => {
       setCustomDateRange(range);

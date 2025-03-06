@@ -1,15 +1,15 @@
-import { Moon, Sun } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Moon, Sun } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { useTheme } from "@/components/theme-provider"
+} from '@/components/ui/dropdown-menu';
+import { useTheme } from '@/components/theme-provider';
 
 export function ModeToggle() {
-  const { setTheme } = useTheme()
+  const { setTheme } = useTheme();
 
   return (
     <DropdownMenu>
@@ -21,16 +21,25 @@ export function ModeToggle() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme("light")} aria-label="Tema claro">
+        <DropdownMenuItem
+          onClick={() => setTheme('light')}
+          aria-label="Tema claro"
+        >
           Light
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")} aria-label="Tema oscuro">
+        <DropdownMenuItem
+          onClick={() => setTheme('dark')}
+          aria-label="Tema oscuro"
+        >
           Dark
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")} aria-label="Tema del sistema">
+        <DropdownMenuItem
+          onClick={() => setTheme('system')}
+          aria-label="Tema del sistema"
+        >
           System
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

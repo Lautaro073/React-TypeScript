@@ -1,4 +1,4 @@
-import  { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { Line } from 'react-chartjs-2';
 import { ChartLegend } from '@/components/chartLegend';
 import {
@@ -12,8 +12,16 @@ import {
 } from 'chart.js';
 import { FinancialChartProps } from '@/types/types';
 import { useLiveFilterChartData } from '@/hooks/useLiveFilterChartData';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Tooltip,
+  Legend
+);
 
 export function FinancialChart({
   financialData,
@@ -23,15 +31,17 @@ export function FinancialChart({
   maxPoints = 20,
   removeCount = 1,
 }: FinancialChartProps) {
-  // Estado para manejar la visibilidad de las líneas.
-  const [hiddenSymbols, setHiddenSymbols] = useState<string[]>([]);
+  const [hiddenSymbols, setHiddenSymbols] = useLocalStorage<string[]>(
+    'liveHiddenSymbols',
+    []
+  );
+
   const toggleSymbol = (label: string) => {
     setHiddenSymbols((prev) =>
       prev.includes(label) ? prev.filter((s) => s !== label) : [...prev, label]
     );
   };
 
-  // Llamamos al hook de datos en vivo siempre, aunque no se use en modo histórico.
   const liveChartData = useLiveFilterChartData({
     financialData,
     symbols: selectedSymbols,
@@ -40,20 +50,23 @@ export function FinancialChart({
     removeCount,
   });
 
-  // Calculamos la data histórica (modo no live)
+  //  Procesa los datos históricos para agruparlos por día y construir los conjuntos de datos para cada símbolo.
   const historicalData = useMemo(() => {
+    // Filtra los datos para incluir solo los símbolos seleccionados.
     const filteredData = financialData.filter((item) =>
       selectedSymbols.includes(item.symbol)
     );
-    // Agrupamos por día (reseteando la hora) para obtener fechas únicas.
+    // Crea un conjunto de fechas únicas (al inicio del día) de los datos filtrados.
     const dateSet = new Set<number>();
     filteredData.forEach((item) => {
       const dayStart = new Date(item.timestamp);
       dayStart.setHours(0, 0, 0, 0);
       dateSet.add(dayStart.getTime());
     });
+    // Ordena las fechas y genera etiquetas legibles.
     const sortedDates = Array.from(dateSet).sort((a, b) => a - b);
     const labels = sortedDates.map((ts) => new Date(ts).toLocaleDateString());
+
     const colors = [
       'rgba(75,192,192,1)',
       'rgba(192,75,192,1)',
@@ -61,6 +74,8 @@ export function FinancialChart({
       'rgba(75,75,192,1)',
       'rgba(192,75,75,1)',
     ];
+
+    // Para cada símbolo seleccionado, crea un mapeo de fecha a precio y genera el dataset correspondiente.
     const datasets = selectedSymbols.map((symbol, index) => {
       const symbolDataMap: Record<number, number> = {};
       filteredData
@@ -70,6 +85,7 @@ export function FinancialChart({
           dayStart.setHours(0, 0, 0, 0);
           symbolDataMap[dayStart.getTime()] = item.price;
         });
+      // Para cada fecha, asigna el precio correspondiente o null si no hay dato.
       const data = sortedDates.map((ts) => symbolDataMap[ts] ?? null);
       return {
         label: symbol,
@@ -86,7 +102,7 @@ export function FinancialChart({
     return { labels, datasets };
   }, [financialData, selectedSymbols, hiddenSymbols]);
 
-  // Decidimos qué data usar según el modo
+  //  Selecciona entre datos en vivo y datos históricos, aplicando la configuración de visibilidad según hiddenSymbols.
   const chartData = useMemo(() => {
     if (live) {
       return {
@@ -96,11 +112,11 @@ export function FinancialChart({
           hidden: hiddenSymbols.includes(ds.label),
         })),
       };
-    } else {
-      return historicalData;
     }
+    return historicalData;
   }, [live, liveChartData, historicalData, hiddenSymbols]);
 
+  //  Configura las opciones del gráfico, ajustando títulos y ejes según el modo en vivo o histórico.
   const chartOptions = useMemo(
     () => ({
       responsive: true,
@@ -110,7 +126,9 @@ export function FinancialChart({
         tooltip: { enabled: true },
         title: {
           display: true,
-          text: live ? 'Gráfico en Vivo de Precios' : 'Evolución del Precio de Acciones',
+          text: live
+            ? 'Gráfico en Vivo de Precios'
+            : 'Evolución del Precio de Acciones',
         },
       },
       scales: {
@@ -132,9 +150,16 @@ export function FinancialChart({
   return (
     <div
       className="w-full"
-      aria-label={live ? 'Gráfico en vivo de precios' : 'Gráfico de evolución del precio de acciones'}
+      aria-label={
+        live
+          ? 'Gráfico en vivo de precios'
+          : 'Gráfico de evolución del precio de acciones'
+      }
     >
-      <ChartLegend datasets={chartData.datasets} toggleVisibility={toggleSymbol} />
+      <ChartLegend
+        datasets={chartData.datasets}
+        toggleVisibility={toggleSymbol}
+      />
       <div className="h-96">
         <Line data={chartData} options={chartOptions} />
       </div>

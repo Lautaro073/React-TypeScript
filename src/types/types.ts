@@ -17,17 +17,17 @@ export interface UseRealtimePriceUpdatesParams {
 }
 
 export interface LiveChartData {
-  labels: string[]; 
+  labels: string[];
   datasets: Array<{
-    label: string;              
-    data: number[];             
-    fill: boolean;              
-    backgroundColor: string;    
-    borderColor: string;        
-    tension: number;            
-    pointRadius: number;       
-    pointHoverRadius: number;   
-    hidden: boolean;            
+    label: string;
+    data: number[];
+    fill: boolean;
+    backgroundColor: string;
+    borderColor: string;
+    tension: number;
+    pointRadius: number;
+    pointHoverRadius: number;
+    hidden: boolean;
   }>;
 }
 
@@ -39,7 +39,6 @@ export interface UseLiveFilterChartDataParams {
   removeCount: number;
 }
 
-
 export interface FinancialChartProps {
   financialData: FinancialData[];
   selectedSymbols: string[];
@@ -48,7 +47,6 @@ export interface FinancialChartProps {
   maxPoints?: number;
   removeCount?: number;
 }
-
 
 export interface UseLiveFilterChartDataParams {
   financialData: FinancialData[];
@@ -59,12 +57,12 @@ export interface UseLiveFilterChartDataParams {
 }
 export interface ChartLegendProps {
   datasets: Array<{
-    label: string
-    backgroundColor: string
-    borderColor: string
-    hidden: boolean
-  }>
-  toggleVisibility: (label: string) => void
+    label: string;
+    backgroundColor: string;
+    borderColor: string;
+    hidden: boolean;
+  }>;
+  toggleVisibility: (label: string) => void;
 }
 
 export interface FinancialCardProps {
