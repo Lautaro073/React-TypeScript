@@ -33,9 +33,9 @@ const Dashboard: React.FC = () => {
   // Uso de useMemo para definir de forma estática los símbolos de las tarjetas.
   const cardSymbols = useMemo(() => ['AAPL', 'GOOG', 'MSFT'], []);
   const symbolIcons: Record<string, string> = {
-    AAPL: '/src/assets/icons/aapl.png',
-    GOOG: '/src/assets/icons/goog.png',
-    MSFT: '/src/assets/icons/msft.png',
+    AAPL: './src/assets/icons/aapl.png',
+    GOOG: './src/assets/icons/goog.png',
+    MSFT: './src/assets/icons/msft.png',
   };
 
   useEffect(() => {
