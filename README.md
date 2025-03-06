@@ -12,7 +12,7 @@ Este proyecto es un Dashboard de Datos Financieros desarrollado con **React** y 
 
 1. **Descomprima el .Zip**
 2. **Instalar las dependencias**
-   -npm install
+   -npm install --legacy-peer-deps
 
 # o, si usas Yarn:
 
